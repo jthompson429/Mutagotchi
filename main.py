@@ -4,6 +4,7 @@ import random
 from logic.stats import MutagotchiStats
 from logic.behavior import get_behavior
 from utils.sound import play_random_sfx, play_background_music
+from utils.save import save_creature, load_creature
 
 MOODS = ["hungry", "sleepy", "feral", "melancholy", "gassy", "glitchy", "ecstatic", "mysterious"]
 
@@ -26,9 +27,16 @@ if __name__ == "__main__":
 
     play_background_music()
 
-    creature = MutagotchiStats()
+    saved_data = load_creature()
+    if saved_data:
+        print("🔁 Resurrecting your last Mutagotchi...")
+        creature = MutagotchiStats.from_dict(saved_data)
+    else:
+        print("🌱 Hatching a new Mutagotchi...")
+        creature = MutagotchiStats()
 
     while True:
         creature.tick()
         display_status(creature)
+        save_creature(creature)
         time.sleep(60)  # Reduce to 10 for testing
